@@ -1,0 +1,38 @@
+name: CI/CD for Azure Container Apps
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name as per your main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: cr0123
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and push Docker image to ACR
+        run: |
+          docker build . -t cr0123.azurecr.io/hello-world-node:latest
+          docker push cr0123.azurecr.io/hello-world-node:latest
+
+      - name: Deploy to Azure Container Apps
+        uses: Azure/webapps-container-deploy@v2
+        with:
+          app-name: hello
+          images: 'cr0123.azurecr.io/hello-world-node:latest'
+          multi-container-config-type: None  # Adjust based on your app configuration
+
+      - name: Azure Logout
+        run: |
+          az logout  # Log out of Azure CLI
+
