@@ -15,6 +15,7 @@ jobs:
 
       - name: Azure Login
         run: az login
+      
       - name: Azure CLI script
         uses: azure/cli@v1
         with:
@@ -32,32 +33,31 @@ jobs:
         run: |
           RESOURCE_GROUP=rg
           CONTAINER_APP_NAME=hello
-          ACR_LOGIN_SERVER=cr0123
+          ACR_LOGIN_SERVER=cr0123.azurecr.io
           IMAGE_NAME=hello-world-node:latest
           ENVIRONMENT_NAME=managedEnvironment-rg-95d1
           
           CONTAINER_APP_EXISTS=$(az containerapp show --name $CONTAINER_APP_NAME --resource-group $RESOURCE_GROUP --query "name" --output tsv || echo "none")
-        
          
           if [ "$CONTAINER_APP_EXISTS" = "none" ]; then 
-          az containerapp update \
-            --name $CONTAINER_APP_NAME \
-            --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN_SERVER/$IMAGE_NAME \
-            --environment $ENVIRONMENT_NAME \
-            --registry-server $ACR_LOGIN_SERVER \
-            --registry-username ${{ secrets.ACR_USERNAME }} \
-            --registry-password ${{ secrets.ACR_PASSWORD }}
-
-             else
+            az containerapp create \
+              --name $CONTAINER_APP_NAME \
+              --resource-group $RESOURCE_GROUP \
+              --image $ACR_LOGIN_SERVER/$IMAGE_NAME \
+              --environment $ENVIRONMENT_NAME \
+              --registry-server $ACR_LOGIN_SERVER \
+              --registry-username ${{ secrets.ACR_USERNAME }} \
+              --registry-password ${{ secrets.ACR_PASSWORD }}
+          else
             az containerapp update \
               --name $CONTAINER_APP_NAME \
               --resource-group $RESOURCE_GROUP \
               --image $ACR_LOGIN_SERVER/$IMAGE_NAME \
-              --registry-login-server $ACR_LOGIN_SERVER \
+              --registry-server $ACR_LOGIN_SERVER \
               --registry-username ${{ secrets.ACR_USERNAME }} \
               --registry-password ${{ secrets.ACR_PASSWORD }}
           fi
 
       - name: Azure Logout
         run: az logout
+
