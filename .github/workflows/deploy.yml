@@ -26,7 +26,7 @@ jobs:
           docker push cr0123.azurecr.io/hello-world-node:latest
 
       - name: Deploy to Azure Container Apps
-        uses: Azure/webapps-container-deploy@v2
+        uses: Azure/webapps-container-deploy@v1
         with:
           app-name: hello
           images: 'cr0123.azurecr.io/hello-world-node:latest'
