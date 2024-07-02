@@ -30,11 +30,11 @@ jobs:
 
       - name: Deploy to Azure Container Apps
         run: |
-          RESOURCE_GROUP= rg
-          CONTAINER_APP_NAME= hello
-          ACR_LOGIN_SERVER= cr0123.azurecr.io
-          IMAGE_NAME= hello-world-node:latest
-          ENVIRONMENT_NAME= managedEnvironment-rg-95d1
+          RESOURCE_GROUP=rg
+          CONTAINER_APP_NAME=hello
+          ACR_LOGIN_SERVER=cr0123.azurecr.io
+          IMAGE_NAME=hello-world-node:latest
+          ENVIRONMENT_NAME=managedEnvironment-rg-95d1
 
           az containerapp update \
             --name $CONTAINER_APP_NAME \
