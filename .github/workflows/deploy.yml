@@ -22,27 +22,28 @@ jobs:
           inlineScript: |
             az account show
 
-      - name: Azure PowerShell script
-        uses: azure/powershell@v1
-        with:
-          azPSVersion: "latest"
-          inlineScript: |
-            Get-AzContext
-
-      - name: Login to Azure Container Registry
-        uses: azure/docker-login@v1
-        with:
-          login-server: cr0123.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-
       - name: Build and push Docker image to ACR
         run: |
+          docker login cr0123.azurecr.io -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
           docker build -t cr0123.azurecr.io/hello-world-node:latest .
           docker push cr0123.azurecr.io/hello-world-node:latest
 
       - name: Deploy to Azure Container Apps
-        uses: azure/webapps-container-deploy@v1
-        with:
-          app-name: hello  # Replace with your Azure Container App name
-          images: 'cr0123.azurecr.io/hello-world-node:latest'
+        run: |
+          RESOURCE_GROUP=rg
+          CONTAINER_APP_NAME=hello
+          ACR_LOGIN_SERVER=cr0123.azurecr.io
+          IMAGE_NAME=hello-world-node:latest
+          ENVIRONMENT_NAME=managedEnvironment-rg-95d1
+
+          az containerapp update \
+            --name $CONTAINER_APP_NAME \
+            --resource-group $RESOURCE_GROUP \
+            --image $ACR_LOGIN_SERVER/$IMAGE_NAME \
+            --environment $ENVIRONMENT_NAME \
+            --registry-server $ACR_LOGIN_SERVER \
+            --registry-username ${{ secrets.ACR_USERNAME }} \
+            --registry-password ${{ secrets.ACR_PASSWORD }}
+
+      - name: Azure Logout
+        run: az logout
