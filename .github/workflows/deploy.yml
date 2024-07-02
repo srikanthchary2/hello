@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
@@ -26,13 +26,8 @@ jobs:
           docker push cr0123.azurecr.io/hello-world-node:latest
 
       - name: Deploy to Azure Container Apps
-        uses: Azure/webapps-container-deploy@v1
+        uses: azure/webapps-deploy@v2
         with:
           app-name: hello
           images: 'cr0123.azurecr.io/hello-world-node:latest'
-          multi-container-config-type: None  # Adjust based on your app configuration
-
-      - name: Azure Logout
-        run: |
-          az logout  # Log out of Azure CLI
 
