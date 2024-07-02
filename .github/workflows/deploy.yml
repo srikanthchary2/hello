@@ -22,7 +22,7 @@ jobs:
 
       - name: Build and push Docker image to ACR
         run: |
-          docker build . -t cr0123.azurecr.io/hello-world-node:latest
+          docker build -t cr0123.azurecr.io/hello-world-node:latest .
           docker push cr0123.azurecr.io/hello-world-node:latest
 
       - name: Deploy to Azure Container Apps
