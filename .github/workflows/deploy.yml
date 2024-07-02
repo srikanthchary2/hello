@@ -29,6 +29,13 @@ jobs:
           inlineScript: |
             Get-AzContext
 
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: cr0123.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
       - name: Build and push Docker image to ACR
         run: |
           docker build -t cr0123.azurecr.io/hello-world-node:latest .
