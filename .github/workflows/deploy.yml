@@ -35,7 +35,11 @@ jobs:
           ACR_LOGIN_SERVER=cr0123.azurecr.io
           IMAGE_NAME=hello-world-node:latest
           ENVIRONMENT_NAME=managedEnvironment-rg-95d1
-
+          
+          CONTAINER_APP_EXISTS=$(az containerapp show --name $CONTAINER_APP_NAME --resource-group $RESOURCE_GROUP --query "name" --output tsv || echo "none")
+        
+         
+          if [ "$CONTAINER_APP_EXISTS" = "none" ]; then 
           az containerapp update \
             --name $CONTAINER_APP_NAME \
             --resource-group $RESOURCE_GROUP \
@@ -44,6 +48,16 @@ jobs:
             --registry-server $ACR_LOGIN_SERVER \
             --registry-username ${{ secrets.ACR_USERNAME }} \
             --registry-password ${{ secrets.ACR_PASSWORD }}
+
+             else
+            az containerapp update \
+              --name $CONTAINER_APP_NAME \
+              --resource-group $RESOURCE_GROUP \
+              --image $ACR_LOGIN_SERVER/$IMAGE_NAME \
+              --registry-login-server $ACR_LOGIN_SERVER \
+              --registry-username ${{ secrets.ACR_USERNAME }} \
+              --registry-password ${{ secrets.ACR_PASSWORD }}
+          fi
 
       - name: Azure Logout
         run: az logout
