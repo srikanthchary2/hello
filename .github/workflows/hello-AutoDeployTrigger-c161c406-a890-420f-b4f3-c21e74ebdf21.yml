@@ -1,0 +1,43 @@
+name: Trigger auto deployment for hello
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/hello-AutoDeployTrigger-c161c406-a890-420f-b4f3-c21e74ebdf21.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.HELLO_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: cr0123.azurecr.io
+          registryUsername: ${{ secrets.HELLO_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.HELLO_REGISTRY_PASSWORD }}
+          containerAppName: hello
+          resourceGroup: rg
+          imageToBuild: cr0123.azurecr.io/hello:${{ github.sha }}
+          
+            
+
+     
+
