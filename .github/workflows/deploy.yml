@@ -6,8 +6,8 @@ on:
       - main  # Adjust the branch name as per your main branch
       
 permissions:
-       id-token: write
-       contents: read
+  id-token: write
+  contents: read
 
 jobs:
   build-and-deploy:
@@ -20,9 +20,9 @@ jobs:
       - name: Azure login
         uses: azure/login@v1
         with:
-         client-id: ${{ secrets.AZURE_CLIENT_ID }}
-         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Build and push Docker image to ACR
         run: |
@@ -37,5 +37,12 @@ jobs:
           ACR_LOGIN_SERVER=cr0123.azurecr.io
           IMAGE_NAME=hello-world-node:latest
           ENVIRONMENT_NAME=managedEnvironment-rg-95d1
+
+          az containerapp update \
+            --name $CONTAINER_APP_NAME \
+            --resource-group $RESOURCE_GROUP \
+            --image $ACR_LOGIN_SERVER/$IMAGE_NAME \
+            --environment $ENVIRONMENT_NAME
+
           
 
