@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main  # Adjust the branch name as per your main branch
-      
+
 permissions:
   id-token: write
   contents: read
@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Azure login
         uses: azure/login@v1
@@ -43,6 +43,3 @@ jobs:
             --resource-group $RESOURCE_GROUP \
             --image $ACR_LOGIN_SERVER/$IMAGE_NAME \
             --environment $ENVIRONMENT_NAME
-
-          
-
