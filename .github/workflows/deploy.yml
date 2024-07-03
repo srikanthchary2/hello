@@ -37,10 +37,9 @@ jobs:
           CONTAINER_APP_NAME=hello
           ACR_LOGIN_SERVER=cr0123.azurecr.io
           IMAGE_NAME=hello:latest
-          ENVIRONMENT_NAME=managedEnvironment-rg-87ce
-
+          
           az containerapp update \
             --name $CONTAINER_APP_NAME \
             --resource-group $RESOURCE_GROUP \
             --image $ACR_LOGIN_SERVER/$IMAGE_NAME \
-            --environment $ENVIRONMENT_NAME
+            
