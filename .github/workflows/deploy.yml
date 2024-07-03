@@ -22,24 +22,27 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - uses: azure/docker-login@v1
+      - name: Azure Docker Login
+        uses: azure/docker-login@v1
         with:
           login-server: cr0123.azurecr.io
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-      - run: |
-         docker build . -t cr0123.azurecr.io/hello:${{ github.sha }}
-         docker push cr0123.azurecr.io/hello:${{ github.sha }}     
+
+      - name: Build and push Docker image to ACR
+        run: |
+          docker build . -t cr0123.azurecr.io/hello:${{ github.sha }}
+          docker push cr0123.azurecr.io/hello:${{ github.sha }}
 
       - name: Deploy to Azure Container Apps
         run: |
           RESOURCE_GROUP=rg
           CONTAINER_APP_NAME=hello
           ACR_LOGIN_SERVER=cr0123.azurecr.io
-          IMAGE_NAME=hello:latest
-          
+          IMAGE_NAME=hello
+
           az containerapp update \
             --name $CONTAINER_APP_NAME \
             --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN_SERVER/$IMAGE_NAME \ 
-            
+            --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
+
