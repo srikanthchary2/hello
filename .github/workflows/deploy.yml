@@ -39,7 +39,7 @@ jobs:
           RESOURCE_GROUP=rg
           CONTAINER_APP_NAME=hello
           ACR_LOGIN_SERVER=cr0123.azurecr.io
-          IMAGE_NAME=hello
+          IMAGE_NAME=cr0123.azurecr.io/hello
 
           az containerapp update \
             --name $CONTAINER_APP_NAME \
