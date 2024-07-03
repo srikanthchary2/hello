@@ -21,6 +21,7 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
 
       - name: Build and push Docker image to ACR
         run: |
@@ -34,7 +35,7 @@ jobs:
           CONTAINER_APP_NAME=hello
           ACR_LOGIN_SERVER=cr0123.azurecr.io
           IMAGE_NAME=hello:latest
-          ENVIRONMENT_NAME=managedEnvironment-rg-95d1
+          ENVIRONMENT_NAME=managedEnvironment-rg-87ce
 
           az containerapp update \
             --name $CONTAINER_APP_NAME \
