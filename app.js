@@ -7,7 +7,7 @@ const port = 8080;
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello, how are u? have a good day \n');
+  res.end('Hello, how are u? have a good day. same to you \n');
 });
 
 server.listen(port, hostname, () => {
