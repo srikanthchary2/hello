@@ -4,8 +4,13 @@
   "description": "A simple Hello World Node.js application",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "jest"
   },
   "author": "",
-  "license": "ISC"
-} 
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^27.0.6"
+  }
+}
+
