@@ -20,17 +20,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # Specify the Node.js version
-
-      - name: Delete package-lock.json and node_modules
-        run: |
-          rm -rf package-lock.json node_modules
+          node-version: '16'  # Specify the Node.js version
 
       - name: Install dependencies
         run: npm install
-
-      - name: Create .env file
-        run: echo "SKIP_PREFLIGHT_CHECK=true" > .env
 
       - name: Run unit tests
         run: npm test
@@ -45,30 +38,29 @@ jobs:
         if: success()
         uses: azure/docker-login@v1
         with:
-          login-server: cr0123.azurecr.io
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Build and push Docker image to ACR
         if: success()
         run: |
-          docker build . -t cr0123.azurecr.io/hello:${{ github.sha }}
-          docker push cr0123.azurecr.io/hello:${{ github.sha }}
+          docker build . -t ${{ secrets.ACR_LOGIN_SERVER }}/hello:${{ github.sha }}
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/hello:${{ github.sha }}
 
       - name: Deploy to Azure Container Apps
         if: success()
         run: |
           RESOURCE_GROUP=rg
           CONTAINER_APP_NAME=hello
-          ACR_LOGIN_SERVER=cr0123.azurecr.io
-          IMAGE_NAME=cr0123.azurecr.io/hello
+          ACR_LOGIN_SERVER=${{ secrets.ACR_LOGIN_SERVER }}
+          IMAGE_NAME=${{ secrets.ACR_LOGIN_SERVER }}/hello
 
-          az containerapp update \
-            --name $CONTAINER_APP_NAME \
-            --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
+          # Retry mechanism for deploying to Azure Container Apps
+          for i in {1..5}; do
+            az containerapp update \
+              --name $CONTAINER_APP_NAME \
+              --resource-group $RESOURCE_GROUP \
+              --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} && break || sleep 60
+          done
 
-          az containerapp update \
-            --name $CONTAINER_APP_NAME \
-            --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
