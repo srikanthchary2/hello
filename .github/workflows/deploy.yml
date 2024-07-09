@@ -17,12 +17,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Specify the Node.js version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run unit tests
+        run: npm test
+
       - name: Azure Login
+        if: success()
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Azure Docker Login
+        if: success()
         uses: azure/docker-login@v1
         with:
           login-server: cr0123.azurecr.io
@@ -30,11 +43,13 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Build and push Docker image to ACR
+        if: success()
         run: |
           docker build . -t cr0123.azurecr.io/hello:${{ github.sha }}
           docker push cr0123.azurecr.io/hello:${{ github.sha }}
 
       - name: Deploy to Azure Container Apps
+        if: success()
         run: |
           RESOURCE_GROUP=rg
           CONTAINER_APP_NAME=hello
@@ -44,5 +59,4 @@ jobs:
           az containerapp update \
             --name $CONTAINER_APP_NAME \
             --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} 
-
+            --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
