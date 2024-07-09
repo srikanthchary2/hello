@@ -1,17 +1,24 @@
-"scripts": {
-  "start": "react-scripts start",
-  "build": "react-scripts build",
-  "test": "react-scripts test --watchAll=false",
-  "eject": "react-scripts eject"
-}
 {
   "name": "hello-world",
   "version": "1.0.0",
   "description": "A simple Hello World Node.js application",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --watchAll=false",
+    "eject": "react-scripts eject"
   },
   "author": "",
-  "license": "ISC"
-} 
+  "license": "ISC",
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/jest-dom": "^5.11.10"
+  }
+}
