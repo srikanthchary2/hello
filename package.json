@@ -4,3 +4,14 @@
   "test": "react-scripts test --watchAll=false",
   "eject": "react-scripts eject"
 }
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "A simple Hello World Node.js application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC"
+} 
