@@ -1,16 +1,6 @@
-{
-  "name": "hello-world",
-  "version": "1.0.0",
-  "description": "A simple Hello World Node.js application",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js",
-    "test": "jest"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "jest": "^27.0.6"
-  }
+"scripts": {
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "test": "react-scripts test --watchAll=false",
+  "eject": "react-scripts eject"
 }
-
