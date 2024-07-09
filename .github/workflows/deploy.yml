@@ -20,10 +20,17 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Specify the Node.js version
+          node-version: '18'  # Specify the Node.js version
+
+      - name: Delete package-lock.json and node_modules
+        run: |
+          rm -rf package-lock.json node_modules
 
       - name: Install dependencies
         run: npm install
+
+      - name: Create .env file
+        run: echo "SKIP_PREFLIGHT_CHECK=true" > .env
 
       - name: Run unit tests
         run: npm test
@@ -38,15 +45,15 @@ jobs:
         if: success()
         uses: azure/docker-login@v1
         with:
-          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          login-server: cr0123.azurecr.io
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Build and push Docker image to ACR
         if: success()
         run: |
-          docker build . -t ${{ secrets.ACR_LOGIN_SERVER }}/hello:${{ github.sha }}
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/hello:${{ github.sha }}
+          docker build . -t cr0123.azurecr.io/hello:${{ github.sha }}
+          docker push cr0123.azurecr.io/hello:${{ github.sha }}
 
       - name: Deploy to Azure Container Apps
         if: success()
@@ -63,4 +70,3 @@ jobs:
               --resource-group $RESOURCE_GROUP \
               --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} && break || sleep 60
           done
-
