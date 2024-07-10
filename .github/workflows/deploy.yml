@@ -1,13 +1,14 @@
 name: CI/CD for Azure Container Apps
-
 on:
   push:
-    branches:
-      - main  # Adjust the branch name as per your main branch
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 permissions:
-  id-token: write
+  pull-requests: write
   contents: read
+  checks: write
 
 jobs:
   build-and-deploy:
