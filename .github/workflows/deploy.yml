@@ -2,7 +2,7 @@ name: CI/CD for Azure Container Apps
 on:
   push:
     branches: [ main ]
-  pull_request:
+  pull_request: write
     branches: [ main ]
 
 permissions:
