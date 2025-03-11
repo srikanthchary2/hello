@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: srikanthcharyhello 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: srikanthcharyhello
+  template:
+    metadata:
+      labels:
+        app: srikanthcharyhello 
+    spec:
+      containers:
+        - name: srikanthcharyhello 
+          image: hellojs.azurecr.io/srikanthcharyhello
+          ports:
+          - containerPort: 80
